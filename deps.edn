@@ -1,0 +1,10 @@
+{:paths ["src"]
+ :deps {me.raystubbs/zero {:local/root "../zero"}}
+
+ :aliases
+ {:dev
+  {:extra-paths ["dev"]
+   :extra-deps {binaryage/devtools {:mvn/version "1.0.5"}
+                org.clojure/clojure {:mvn/version "1.11.1"}
+                no.cjohansen/portfolio {:mvn/version "2024.03.18"}
+                thheller/shadow-cljs {:mvn/version "2.25.8"}}}}}

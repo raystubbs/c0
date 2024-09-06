@@ -1,0 +1,12 @@
+{:deps {:aliases [:dev]}
+ :dev-http {8000 ["pub" "classpath:public"]}
+
+ :builds
+ {:portfolio
+  {:target :browser
+   :output-dir "pub/js"
+   :asset-path "/"
+   :devtools {:watch-dir "pub"}
+   :modules {:base {}
+             :portfolio {:init-fn c0.portfolio.main/init :depends-on #{:base}}
+             :canvas {:init-fn c0.portfolio.canvas/init :depends-on #{:base}}}}}}
