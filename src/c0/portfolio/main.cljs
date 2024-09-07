@@ -59,3 +59,42 @@
     :label "Disabled"
     :disabled true
     :hint "This one's disabled"]])
+
+(defscene action-button
+  :collection :action
+  :title "Action Button"
+  [:div
+   :#style {:display :grid
+            :grid-template-columns "repeat(auto-fit, 10rem)"
+            :gap "1rem"
+            :justify-items :center}
+   [:c0.action/button
+    "Primary Button"]
+   [:c0.action/button
+    :status :pending
+    "Pending"]
+   [:c0.action/button
+    :status :disabled
+    "Disabled"]
+   [:c0.action/button
+    :variant :simple
+    "Simple"]
+   [:c0.action/button
+    :variant :lowpro
+    "Low Profile"]
+   [:c0.action/button
+    :variant :danger
+    "Danger"]])
+
+(defscene virtual-list
+  :title "Virtual List"
+  [:div
+   "A Virtual List makes long lists more performant by only rendering "
+   "the things that are visible in the viewport at any given time."
+   [:c0/vlist
+    :#style {:height "15rem" :width "10rem" :margin-top "1rem"}
+    :item-height "1rem"
+    :items (map
+             (fn [n]
+               (str "Item Number " n))
+             (range 0 10000))]])

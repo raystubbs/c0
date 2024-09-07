@@ -1,11 +1,12 @@
 (ns c0.style
   (:require
-   [zero.core :refer [css]]))
+   [zero.core :refer [css]]
+   [clojure.string :as str]))
 
 (def ^:private colors
-  {:border-low-res "#E7E5E4"
-   :border-mid-res "#D6D3D1"
-   :border-high-res "#A8A29E"
+  {:border-low-res {:light "#E7E5E4" :dark "#292524"}
+   :border-mid-res {:light "#D6D3D1" :dark "#44403C"}
+   :border-high-res {:light "#A8A29E" :dark "#57534E"}
    :border-accent "#3B82F6"
    :border-error "#DC2626"
    :text-low-res "#D4D4D8"
@@ -13,8 +14,28 @@
    :text-high-res "#1F2937"
    :text-accent "#3B82F6"
    :text-error "#DC2626"
-   :bg-field "light-dark(white, rgb(32, 33, 36))"
-   :bg-field-disabled "light-dark(rgba(239, 239, 239, 0.3), rgba(59, 59, 59, 0.3))"})
+   :bg-field {:light "white" :dark "rgb(32, 33, 36)"}
+   :bg-field-disabled {:light "rgba(239, 239, 239, 0.3)" :dark "rgba(59, 59, 59, 0.3)"}
+   :bg-btn-primary "#3B82F6"
+   :bg-btn-simple "transparent"
+   :bg-btn-lowpro "transparent"
+   :bg-btn-danger "#DC2626"
+   :bg-btn-primary-hovered "#166bf5"
+   :bg-btn-simple-hovered {:light "rgba(0, 0, 0, 0.05)" :dark "rgba(255, 255, 255, 0.05)"}
+   :bg-btn-lowpro-hovered {:light "rgba(0, 0, 0, 0.05)" :dark "rgba(255, 255, 255, 0.05)"}
+   :bg-btn-danger-hovered "#d91111"
+   :text-btn-primary "white"
+   :text-btn-simple {:light "#6B7280" :dark "white"}
+   :text-btn-lowpro {:light "#6B7280" :dark "white"}
+   :text-btn-danger "white"
+   :border-btn-primary "#1D4ED8"
+   :border-btn-simple "transparent"
+   :border-btn-lowpro "#D6D3D1"
+   :border-btn-danger "#7F1D1D"
+   :fx-btn-primary "rgba(255, 255, 255, 0.25)"
+   :fx-btn-simple {:light "rgba(0, 0, 0, 0.25)" :dark "rgba(255, 255, 255, 0.25)"}
+   :fx-btn-lowpro {:light "rgba(0, 0, 0, 0.25)" :dark "rgba(255, 255, 255, 0.25)"}
+   :fx-btn-danger "rgba(255, 255, 255, 0.25)"})
 
 (def ^:private sizes
   {:radius-sm "2px"
@@ -33,16 +54,36 @@
 (defonce __register-custom-properties__
   (do
     (doseq [[k v] colors]
-      (js/CSS.registerProperty
-        #js{:name (str "--c0-color-" (name k))
-            :syntax "<color>"
-            :inherits false
-            :initialValue v}))
+      (cond
+        (string? v)
+        (js/CSS.registerProperty
+          #js{:name (str "--c0-color-" (name k))
+              :syntax "<color>"
+              :inherits true
+              :initialValue v})
+
+        (map? v)
+        (do
+          (js/CSS.registerProperty
+            #js{:name (str "--c0-color-" (name k))
+                :syntax "<color>"
+                :inherits true
+                :initialValue (:light v)})
+          (js/CSS.registerProperty
+            #js{:name (str "--c0-color-dark-" (name k))
+                :syntax "<color>"
+                :inherits true
+                :initialValue (:dark v)})
+          (js/CSS.registerProperty
+            #js{:name (str "--c0-color-light" (name k))
+                :syntax "<color>"
+                :inherits true
+                :initialValue (:light v)}))))
     (doseq [[k v] sizes]
       (js/CSS.registerProperty
         #js{:name (str "--c0-size-" (name k))
             :syntax "<length>"
-            :inherits false
+            :inherits true
             :initialValue v}))))
 
 (def common-style
@@ -69,6 +110,11 @@
     }
     .items-center {
       align-items: center;
+    }
+    .center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .w-screen {
       width: 100vw;
@@ -106,6 +152,15 @@
       margin-left: var(--c0-size-space-lg);
       margin-right: var(--c0-size-space-lg);
     }
+    .m-sm {
+      margin: var(--c0-size-space-sm);
+    }
+    .m-md {
+      margin: var(--c0-size-space-md);
+    }
+    .m-lg {
+      margin: var(--c0-size-space-lg);
+    }
     .py-sm {
       padding-top: var(--c0-size-space-sm);
       padding-bottom: var(--c0-size-space-sm);
@@ -129,6 +184,15 @@
     .px-lg {
       padding-left: var(--c0-size-space-lg);
       padding-right: var(--c0-size-space-lg);
+    }
+    .p-sm {
+      padding: var(--c0-size-space-sm);
+    }
+    .p-md {
+      padding: var(--c0-size-space-md);
+    }
+    .p-lg {
+      padding: var(--c0-size-space-lg);
     }
     .rr-sm {
       border-top-right-radius: var(--c0-size-radius-sm);
@@ -154,4 +218,20 @@
       border-top-left-radius: var(--c0-size-radius-lg);
       border-bottom-left-radius: var(--c0-size-radius-lg);
     }
-  "))
+    .r-sm {
+      border-radius: var(--c0-size-radius-sm);
+    }
+    .r-md {
+      border-radius: var(--c0-size-radius-md);
+    }
+    .r-lg {
+      border-radius: var(--c0-size-radius-lg);
+    }
+  "
+    (str ":host {\n"
+      (str/join "\n"
+        (keep
+         (fn [[k v]]
+           (when (map? v)
+             (str "  --c0-color-" (name k) ": light-dark(" (:light v) ", " (:dark v) ");")))
+         colors)))))

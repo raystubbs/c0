@@ -1,5 +1,5 @@
 {:paths ["src"]
- :deps {me.raystubbs/zero {:local/root "../zero"}}
+ :deps {me.raystubbs/zero {:mvn/version "0.1.21"}}
 
  :aliases
  {:dev

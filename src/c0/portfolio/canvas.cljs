@@ -6,7 +6,9 @@
    [c0.style :refer [common-style]]
    [subzero.rstore :as rstore]
 
-   [c0.input.text]))
+   [c0.input.text]
+   [c0.action.button]
+   [c0.vlist]))
 
 (defonce !db (rstore/rstore {}))
 
