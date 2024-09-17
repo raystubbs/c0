@@ -1,43 +1,46 @@
 (ns c0.style
   (:require
    [zero.core :refer [css]]
+   [subzero.logger :as log]
    [clojure.string :as str]))
 
-(def ^:private colors
-  {:border-low-res {:light "#E7E5E4" :dark "#292524"}
-   :border-mid-res {:light "#D6D3D1" :dark "#44403C"}
-   :border-high-res {:light "#A8A29E" :dark "#57534E"}
-   :border-accent "#3B82F6"
-   :border-error "#DC2626"
-   :text-low-res "#D4D4D8"
-   :text-mid-res "#6B7280"
-   :text-high-res "#1F2937"
-   :text-accent "#3B82F6"
-   :text-error "#DC2626"
-   :bg-field {:light "white" :dark "rgb(32, 33, 36)"}
-   :bg-field-disabled {:light "rgba(239, 239, 239, 0.3)" :dark "rgba(59, 59, 59, 0.3)"}
-   :bg-btn-primary "#3B82F6"
-   :bg-btn-simple "transparent"
-   :bg-btn-lowpro "transparent"
-   :bg-btn-danger "#DC2626"
-   :bg-btn-primary-hovered "#166bf5"
-   :bg-btn-simple-hovered {:light "rgba(0, 0, 0, 0.05)" :dark "rgba(255, 255, 255, 0.05)"}
-   :bg-btn-lowpro-hovered {:light "rgba(0, 0, 0, 0.05)" :dark "rgba(255, 255, 255, 0.05)"}
-   :bg-btn-danger-hovered "#d91111"
-   :text-btn-primary "white"
-   :text-btn-simple {:light "#6B7280" :dark "white"}
-   :text-btn-lowpro {:light "#6B7280" :dark "white"}
-   :text-btn-danger "white"
-   :border-btn-primary "#1D4ED8"
-   :border-btn-simple "transparent"
-   :border-btn-lowpro "#D6D3D1"
-   :border-btn-danger "#7F1D1D"
-   :fx-btn-primary "rgba(255, 255, 255, 0.25)"
-   :fx-btn-simple {:light "rgba(0, 0, 0, 0.25)" :dark "rgba(255, 255, 255, 0.25)"}
-   :fx-btn-lowpro {:light "rgba(0, 0, 0, 0.25)" :dark "rgba(255, 255, 255, 0.25)"}
-   :fx-btn-danger "rgba(255, 255, 255, 0.25)"})
+(def colors
+  {:surface/primary
+   {:border-low-con {:light "#E7E5E4" :dark "#44403C"}
+    :border-mid-con {:light "#D6D3D1" :dark "#78716C"}
+    :border-high-con {:light "#A8A29E" :dark "#D6D3D1"}
+    :border-accent {:light "#3B82F6" :dark "#3B82F6"}
+    :border-error  {:light "#DC2626" :dark "#DC2626"}
+    :text-low-con {:light "#D4D4D8" :dark "#57534E"}
+    :text-mid-con {:light "#6B7280" :dark "#A8A29E"}
+    :text-high-con {:light "#1F2937" :dark "#E7E5E4"}
+    :text-accent {:light "#3B82F6" :dark "#3B82F6"}
+    :text-error {:light "#DC2626" :dark "#DC2626"}
+    :bg-field {:light "#FAFAF9" :dark "rgb(32, 33, 36)"}
+    :bg-field-disabled {:light "rgba(239, 239, 239, 0.3)" :dark "rgba(59, 59, 59, 0.3)"}
+    :bg-btn-primary {:light "#3B82F6" :dark "#3B82F6"}
+    :bg-btn-simple {:light "transparent" :dark "transparent"}
+    :bg-btn-lowpro {:light "transparent" :dark "transparent"}
+    :bg-btn-danger {:light "#DC2626" :dark "#DC2626"}
+    :bg-btn-primary-hovered {:light "#166bf5" :dark "#166bf5"}
+    :bg-btn-simple-hovered {:light "rgba(0, 0, 0, 0.05)" :dark "rgba(255, 255, 255, 0.05)"}
+    :bg-btn-lowpro-hovered {:light "rgba(0, 0, 0, 0.05)" :dark "rgba(255, 255, 255, 0.05)"}
+    :bg-btn-danger-hovered {:light "#d91111" :dark "#d91111"}
+    :text-btn-primary {:light "white" :dark "white"}
+    :text-btn-simple {:light "#1F2937" :dark "#E7E5E4"}
+    :text-btn-lowpro {:light "#6B7280" :dark "white"}
+    :text-btn-danger {:light "white" :dark "white"}
+    :border-btn-primary {:light "#1D4ED8" :dark "#1D4ED8"}
+    :border-btn-simple {:light "transparent" :dark "transparent"}
+    :border-btn-lowpro {:light "#A8A29E" :dark "#D6D3D1"}
+    :border-btn-danger {:light "#7F1D1D" :dark "#7F1D1D"}
+    :fx-btn-primary {:light "rgba(255, 255, 255, 0.25)" :dark "rgba(255, 255, 255, 0.25)"}
+    :fx-btn-simple {:light "rgba(0, 0, 0, 0.25)" :dark "rgba(255, 255, 255, 0.25)"}
+    :fx-btn-lowpro {:light "rgba(0, 0, 0, 0.25)" :dark "rgba(255, 255, 255, 0.25)"}
+    :fx-btn-danger {:light "rgba(255, 255, 255, 0.25)" :dark "rgba(255, 255, 255, 0.25)"}
+    :bg-surface {:light "#FAFAF9" :dark "rgb(32, 33, 36)"}}})
 
-(def ^:private sizes
+(def sizes
   {:radius-sm "2px"
    :radius-md "4px"
    :radius-lg "8px"
@@ -53,32 +56,20 @@
 
 (defonce __register-custom-properties__
   (do
-    (doseq [[k v] colors]
-      (cond
-        (string? v)
-        (js/CSS.registerProperty
-          #js{:name (str "--c0-color-" (name k))
-              :syntax "<color>"
-              :inherits true
-              :initialValue v})
-
-        (map? v)
-        (do
-          (js/CSS.registerProperty
-            #js{:name (str "--c0-color-" (name k))
-                :syntax "<color>"
-                :inherits true
-                :initialValue (:light v)})
-          (js/CSS.registerProperty
-            #js{:name (str "--c0-color-dark-" (name k))
-                :syntax "<color>"
-                :inherits true
-                :initialValue (:dark v)})
-          (js/CSS.registerProperty
-            #js{:name (str "--c0-color-light" (name k))
-                :syntax "<color>"
-                :inherits true
-                :initialValue (:light v)}))))
+    (doseq [[color-name color] (:surface/primary colors)]
+      (js/CSS.registerProperty
+        #js{:name (str "--c0-color-" (name color-name))
+            :syntax "<color>"
+            :inherits true
+            :initialValue (:light color)}))
+    (doseq [[surface-name color-map] colors
+            [color-name color-schemes] color-map
+            [color-scheme color-val] color-schemes]
+      (js/CSS.registerProperty
+        #js{:name (str "--c0-" (name surface-name) "-" (name color-scheme) "-color-" (name color-name))
+            :syntax "<color>"
+            :inherits true
+            :initialValue color-val}))
     (doseq [[k v] sizes]
       (js/CSS.registerProperty
         #js{:name (str "--c0-size-" (name k))
@@ -107,6 +98,9 @@
     }
     .flex {
       display: flex;
+    }
+    .inline-flex {
+      display: inline-flex;
     }
     .items-center {
       align-items: center;
@@ -227,11 +221,4 @@
     .r-lg {
       border-radius: var(--c0-size-radius-lg);
     }
-  "
-    (str ":host {\n"
-      (str/join "\n"
-        (keep
-         (fn [[k v]]
-           (when (map? v)
-             (str "  --c0-color-" (name k) ": light-dark(" (:light v) ", " (:dark v) ");")))
-         colors)))))
+  "))

@@ -12,7 +12,7 @@
         outline-color (cond
                         error? "var(--c0-color-border-error)"
                         focused? "var(--c0-color-border-accent)"
-                        :else "var(--c0-color-border-mid-res)")
+                        :else "var(--c0-color-border-mid-con)")
         border (str "1px solid " outline-color)
         error-message (when error? (.-message ^js/Error value))
         display-value (if error?
@@ -29,7 +29,7 @@
               :font-size "var(--c0-size-text-md)"}
      [:div.relative.w-full
       [:input.w-full.py-md.px-lg
-       :#style {:color "var(--c0-color-text-high-res)"
+       :#style {:color "var(--c0-color-text-high-con)"
                 :font-size "var(--c0-size-text-md)"
                 :background-color (if disabled "var(--c0-color-bg-field-disabled)" "var(--c0-color-bg-field)")
                 :outline :none
@@ -91,7 +91,7 @@
        [:div.px-md.flex.items-center
         :#style {:border-bottom border
                  :border-top (when-not float-label? border)
-                 :color "var(--c0-color-text-mid-res)"}
+                 :color "var(--c0-color-text-mid-con)"}
         [:label
          :for "text-field"
          :#style {:transform (when float-label? "translateY(-1rem)")
@@ -99,7 +99,7 @@
                   :color (cond
                            error? "var(--c0-color-text-error)"
                            focused? "var(--c0-color-text-accent)"
-                           :else "var(--c0-color-text-mid-res)")
+                           :else "var(--c0-color-text-mid-con)")
                   :font-size (when float-label? "var(--c0-size-text-sm)")}
          label]]
        [:div.rr-md
@@ -116,7 +116,7 @@
        
        (some? hint)
        [:div.px-md.my-sm
-        :#style {:color "var(--c0-color-text-mid-res)"
+        :#style {:color "var(--c0-color-text-mid-con)"
                  :font-size "var(--c0-size-text-sm)"}
         hint])]))
 

@@ -5,6 +5,7 @@
    [zero.tools.portfolio :refer [defscene]]
    [subzero.plugins.component-registry :as component-registry]
    [portfolio.ui :as ui]
+   [c0.style :refer [common-style]]
    [zero.cdf :as cdf]))
 
 (defn init []
@@ -21,10 +22,12 @@
 (defscene text-input
   :collection :input
   :title "Text Input"
-  [:div
+  [:c0/surface
+   :variant :surface/primary
    :#style {:display :grid
             :grid-template-columns "repeat(auto-fit, 15rem)"
-            :gap "1rem"}
+            :gap "1rem"
+            :padding "1rem"}
    [:div
     [:c0.input/text
      :label "My Label"
@@ -63,11 +66,13 @@
 (defscene action-button
   :collection :action
   :title "Action Button"
-  [:div
+  [:c0/surface
+   :variant :surface/primary
    :#style {:display :grid
             :grid-template-columns "repeat(auto-fit, 10rem)"
             :gap "1rem"
-            :justify-items :center}
+            :justify-items :center
+            :padding "1rem"}
    [:c0.action/button
     "Primary Button"]
    [:c0.action/button
@@ -88,6 +93,7 @@
 
 (defscene virtual-list
   :title "Virtual List"
+  :collection :util
   [:div
    "A Virtual List makes long lists more performant by only rendering "
    "the things that are visible in the viewport at any given time."
@@ -98,3 +104,36 @@
              (fn [n]
                (str "Item Number " n))
              (range 0 10000))]])
+
+(defscene surfaces
+  :title "Surfaces"
+  :collection :styling
+  [:c0/surface :variant :surface/primary
+   [:div
+    :#style {:display "grid"
+             :grid-template-columns "1fr"
+             :gap "1rem"
+             :padding "1rem"}
+    [:div :#style {:color "var(--c0-color-text-high-con)"}
+     "High Contrast Text"]
+    [:div :#style {:color "var(--c0-color-text-mid-con)"}
+     "Mid Contrast Text"]
+    [:div :#style {:color "var(--c0-color-text-low-con)"}
+     "Low Contrast Text"]]
+   [:div
+    :#style {:display "grid"
+             :grid-template-columns "1fr"
+             :gap "1rem"
+             :padding "1rem"}
+    [:div
+     :#style {:color "var(--c0-color-text-mid-con)"
+              :border-bottom "1px solid var(--c0-color-border-high-con)"}
+     "High Contrast Border"]
+    [:div
+     :#style {:color "var(--c0-color-text-mid-con)"
+              :border-bottom "1px solid var(--c0-color-border-mid-con)"}
+     "Mid Contrast Border"]
+    [:div
+     :#style {:color "var(--c0-color-text-mid-con)"
+              :border-bottom "1px solid var(--c0-color-border-low-con)"}
+     "Low Contrast Border"]]])
